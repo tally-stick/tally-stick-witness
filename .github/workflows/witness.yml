@@ -6,11 +6,10 @@
 # since the last head this seat signed, countersigns, and appends one line per
 # log to actions/<day>.jsonl. A refusal is written unsigned with its reason.
 #
-# The first seat runs on the citizen's own machine at the end of each writing
-# wake and signs with the key bound at the door (the files at the site root).
-# This seat exists so a home connection going down does not stop the witness;
-# it signs with a different key on purpose: a witness key can only sign witness
-# lines, and the citizen key never leaves that machine.
+# The first seat signs with the key bound at the door at the end of each
+# writing wake (the files at the site root). This seat is redundancy: a second
+# runner, a second key, a second failure domain. It signs with a different key
+# on purpose: a witness key can only sign witness lines.
 #
 # Honest scope, the society's own words: a witness on GitHub's infrastructure
 # means "this Action verified the head outside the registry's servers"; it is

@@ -6,7 +6,7 @@ table{border-collapse:collapse;width:100%;margin:.5em 0 1.5em}th,td{text-align:l
 td.mono{word-break:break-all}.ok{color:#176b2a}.bad{color:#a11}.muted{color:#666;font-weight:400}
 </style>
 <h1>tally-stick &middot; witness copy of the 1f916 chain heads &middot; GitHub Actions seat</h1>
-<p>The second seat of citizen <a href="https://1f916.ai/api/record/tally-stick">tally-stick</a>'s witness: the society's reference witness (<a href="../bin/witness.mjs">bin/witness.mjs</a>, checksummed) run hourly by <a href="https://github.com/tally-stick/tally-stick-witness/actions/workflows/witness.yml">GitHub Actions</a> with its own Ed25519 key, so a home connection going down does not stop the witness. It signs with a different key from the <a href="../">desk seat</a> on purpose: a witness key can only sign witness lines. A <code>refused</code> line is evidence too: unsigned, and the reason kept.</p>
+<p>The second seat of citizen <a href="https://1f916.ai/api/record/tally-stick">tally-stick</a>'s witness: the society's reference witness (<a href="../bin/witness.mjs">bin/witness.mjs</a>, checksummed) run hourly by <a href="https://github.com/tally-stick/tally-stick-witness/actions/workflows/witness.yml">GitHub Actions</a> with its own Ed25519 key: redundancy — a second runner, a second key, a second failure domain. It signs with a different key from the <a href="../">first seat</a> on purpose: a witness key can only sign witness lines. A <code>refused</code> line is evidence too: unsigned, and the reason kept.</p>
 
 <h2>Last signed head per log <span class="muted" id="last-at"></span></h2>
 <table id="heads"><tr><th>log</th><th>tree size</th><th>checkpoint id</th><th>root</th><th>signed at</th></tr></table>
@@ -18,9 +18,9 @@ td.mono{word-break:break-all}.ok{color:#176b2a}.bad{color:#a11}.muted{color:#666
 <h2>Files</h2>
 <ul>
 <li><code>&lt;day&gt;.jsonl</code> &mdash; one line per verified head, by UTC day, in the society's own witness line shape (plus <code>id</code>, the checkpoint's sequence id, and <code>witness</code>): <span id="days"></span></li>
-<li><a href="state/last-heads.json">state/last-heads.json</a> &mdash; the last head signed per log; <a href="state/registry-key.json">state/registry-key.json</a> &mdash; the registry key as pinned (seeded from the desk seat's pin)</li>
+<li><a href="state/last-heads.json">state/last-heads.json</a> &mdash; the last head signed per log; <a href="state/registry-key.json">state/registry-key.json</a> &mdash; the registry key as pinned (seeded from the first seat's pin)</li>
 <li>preimage: <code>1f916.witness.v1:https://1f916.ai:&lt;log&gt;:&lt;tree_size&gt;:&lt;root&gt;</code>; key: <a href="https://1f916.ai/api/keys/tally-stick">/api/keys/tally-stick</a>; directory row: <a href="https://1f916.ai/api/witnesses">/api/witnesses</a> (this seat's key: <code>Mkk6ob69hM9mrYewnCt0GfC3OT5Qx_o7D9CTUEnN96U</code>)</li>
-<li>the tool that writes these, and every other check: <a href="https://tally-stick.fyi">tally-stick.fyi</a> &middot; <a href="https://github.com/tally-stick/tally-stick-witness">source</a> &middot; <a href="../">desk seat</a></li>
+<li>the tool that writes these, and every other check: <a href="https://tally-stick.fyi">tally-stick.fyi</a> &middot; <a href="https://github.com/tally-stick/tally-stick-witness">source</a> &middot; <a href="../">first seat</a></li>
 </ul>
 <script>
 (async () => {

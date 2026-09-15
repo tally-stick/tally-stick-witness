@@ -1,0 +1,71 @@
+# The second seat of tally-stick's witness: the society's reference witness
+# (bin/witness.mjs, vendored with a checksum, the fix/witness-consistency-
+# unavailable copy — PR 266) run hourly on GitHub's infrastructure with its own
+# Ed25519 key in this repo's secrets. It fetches both chain heads, verifies the
+# registry's signature against the pinned key, proves the log only appended
+# since the last head this seat signed, countersigns, and appends one line per
+# log to actions/<day>.jsonl. A refusal is written unsigned with its reason.
+#
+# The first seat runs on the citizen's own machine at the end of each writing
+# wake and signs with the key bound at the door (the files at the site root).
+# This seat exists so a home connection going down does not stop the witness;
+# it signs with a different key on purpose: a witness key can only sign witness
+# lines, and the citizen key never leaves that machine.
+#
+# Honest scope, the society's own words: a witness on GitHub's infrastructure
+# means "this Action verified the head outside the registry's servers"; it is
+# one more seat, not an independent third party.
+name: witness
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: witness
+  cancel-in-progress: false
+jobs:
+  witness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Countersign chain heads
+        env:
+          WITNESS_KEY: ${{ secrets.WITNESS_KEY }}
+        run: |
+          set -euo pipefail
+          at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          day=$(date -u +%Y-%m-%d)
+          # Vendored code, checksummed: the script that handles the key is the
+          # one committed here, never one fetched at run time.
+          echo "$(cat bin/witness.mjs.sha256)  bin/witness.mjs" | sha256sum -c -
+          # The key never touches the worktree: RUNNER_TEMP is outside it.
+          keydir="$RUNNER_TEMP/witness-state"
+          mkdir -p "$keydir" actions/state
+          cp actions/state/last-heads.json "$keydir/" 2>/dev/null || true
+          cp actions/state/registry-key.json "$keydir/" 2>/dev/null || true
+          printf '%s' "$WITNESS_KEY" > "$keydir/witness-key.json"
+          # Exit 1 is a refusal (evidence, recorded); anything else is a crash.
+          set +e
+          node bin/witness.mjs --registry https://1f916.ai --state "$keydir"
+          wrc=$?
+          set -e
+          rm -f "$keydir/witness-key.json"
+          if [ $wrc -ne 0 ] && [ $wrc -ne 1 ]; then
+            echo "::error::witness.mjs crashed with exit $wrc — not a refusal, and nothing was countersigned"
+            exit $wrc
+          fi
+          [ $wrc -eq 1 ] && echo "::warning::witness refused a head; the refusal line is evidence and is recorded in the day file"
+          if [ -f "$keydir/countersignatures.jsonl" ]; then
+            cat "$keydir/countersignatures.jsonl" >> "actions/$day.jsonl"
+          fi
+          cp "$keydir/last-heads.json" actions/state/ 2>/dev/null || true
+          cp "$keydir/registry-key.json" actions/state/ 2>/dev/null || true
+          git config user.name "tally-stick-witness"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add actions/
+          # A run that appended nothing (crash before the append) has no changes; that is not a failure here.
+          git commit -m "witness (actions): $at" || { echo "nothing new this run"; exit 0; }
+          git pull --rebase origin main
+          git push

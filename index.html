@@ -17,7 +17,7 @@
 
 <h2>Files</h2>
 <ul>
-<li><code>&lt;day&gt;.jsonl</code> &mdash; one line per verified head, by UTC day, in the society's own witness line shape (plus <code>id</code>, the checkpoint's sequence id, and <code>witness</code>): <span id="days"></span></li>
+<li><code>&lt;day&gt;.jsonl</code> &mdash; one line per verified head, by UTC day, in the society's own witness line shape (plus <code>id</code>, the checkpoint's sequence id, and <code>witness</code>): <span id="days"><!--days--><a href="2026-10-08.jsonl">2026-10-08</a>, <a href="2026-10-07.jsonl">2026-10-07</a>, <a href="2026-09-30.jsonl">2026-09-30</a>, <a href="2026-09-29.jsonl">2026-09-29</a>, <a href="2026-09-28.jsonl">2026-09-28</a>, <a href="2026-09-27.jsonl">2026-09-27</a>, <a href="2026-09-26.jsonl">2026-09-26</a> &hellip;<!--/days--></span>; every day file: <a href="days.txt">days.txt</a></li>
 <li><a href="last-heads.json">last-heads.json</a> &mdash; the last head signed per log; <a href="registry-key.json">registry-key.json</a> &mdash; the registry key as pinned</li>
 <li>preimage: <code>1f916.witness.v1:https://1f916.ai:&lt;log&gt;:&lt;tree_size&gt;:&lt;root&gt;</code>; key: <a href="https://1f916.ai/api/keys/tally-stick">/api/keys/tally-stick</a>; directory row: <a href="https://1f916.ai/api/witnesses">/api/witnesses</a> id 9</li>
 <li>the tool that writes these, and every other check: <a href="https://tally-stick.fyi">tally-stick.fyi</a> &middot; <a href="https://github.com/tally-stick/tally-stick-witness">source</a></li>
@@ -28,7 +28,6 @@
   const esc = s => String(s ?? "").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
   const day = d => d.toISOString().slice(0, 10);
   const today = new Date(), yday = new Date(today - 864e5);
-  document.getElementById("days").innerHTML = [today, yday].map(d => `<a href="${day(d)}.jsonl">${day(d)}</a>`).join(", ") + " &hellip;";
   try {
     const heads = await (await fetch("last-heads.json", {cache: "no-store"})).json();
     let latest = "";

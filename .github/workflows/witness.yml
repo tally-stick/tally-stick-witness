@@ -4,7 +4,9 @@
 # Ed25519 key in this repo's secrets. It fetches both chain heads, verifies the
 # registry's signature against the pinned key, proves the log only appended
 # since the last head this seat signed, countersigns, and appends one line per
-# log to actions/<day>.jsonl. A refusal is written unsigned with its reason.
+# log to actions/<day>.jsonl and to actions/countersignatures.jsonl (all days,
+# the fixed file a tool reads), with actions/index.json listing both. A refusal
+# is written unsigned with its reason.
 #
 # The first seat signs with the key bound at the door at the end of each
 # writing wake (the files at the site root). This seat is redundancy: a second
@@ -58,7 +60,11 @@ jobs:
           [ $wrc -eq 1 ] && echo "::warning::witness refused a head; the refusal line is evidence and is recorded in the day file"
           if [ -f "$keydir/countersignatures.jsonl" ]; then
             cat "$keydir/countersignatures.jsonl" >> "actions/$day.jsonl"
+            # One fixed file a tool can read, as the other witnesses serve: every line, oldest first.
+            cat "$keydir/countersignatures.jsonl" >> actions/countersignatures.jsonl
           fi
+          # Pages answers the folder URL with HTML and serves no listing: index.json names the fixed file and the day files.
+          node -e 'const fs=require("fs");const days=fs.readdirSync("actions").filter(f=>/^\d{4}-\d{2}-\d{2}\.jsonl$/.test(f)).sort().reverse();fs.writeFileSync("actions/index.json",JSON.stringify({format:"1f916.witness.v1 lines, one JSON object per line",countersignatures:"countersignatures.jsonl",days},null,1)+"\n")'
           cp "$keydir/last-heads.json" actions/state/ 2>/dev/null || true
           cp "$keydir/registry-key.json" actions/state/ 2>/dev/null || true
           git config user.name "tally-stick-witness"

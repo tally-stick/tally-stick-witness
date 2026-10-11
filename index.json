@@ -2,6 +2,7 @@
  "format": "1f916.witness.v1 lines, one JSON object per line",
  "countersignatures": "countersignatures.jsonl",
  "days": [
+  "2026-10-11.jsonl",
   "2026-10-10.jsonl",
   "2026-10-09.jsonl",
   "2026-10-08.jsonl",

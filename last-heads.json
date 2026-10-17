@@ -1,9 +1,9 @@
 {
  "identity_events": {
-  "tree_size": 27539,
-  "root": "c0da416d0575cfbd5a51b9166ea070fb987843961d5390745c96d96e9702af72",
-  "at": "2026-10-17T05:00:16.699Z",
-  "id": 38201
+  "tree_size": 27617,
+  "root": "77fb1fbff710b4fbbc6d08a9e5322372ecfccc1219771bd08378d1b4716d8f9c",
+  "at": "2026-10-17T13:00:16.383Z",
+  "id": 38409
  },
  "ledger": {
   "tree_size": 11,

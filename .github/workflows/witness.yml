@@ -16,10 +16,12 @@
 # Honest scope, the society's own words: a witness on GitHub's infrastructure
 # means "this Action verified the head outside the registry's servers"; it is
 # one more seat, not an independent third party.
+#
+# Retired 2026-10-28: the hourly schedule is removed and this seat no longer
+# countersigns. The files under actions/ stay as the record of what it signed.
+# A run can still be started by hand (workflow_dispatch).
 name: witness
 on:
-  schedule:
-    - cron: "23 * * * *"
   workflow_dispatch:
 permissions:
   contents: write
